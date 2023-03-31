@@ -53,6 +53,14 @@ architecture behavioral of ccm is
 	signal adder_r_2_scaled : signed (7 downto 0) := (others => '0');
 	signal adder_g_2_scaled : signed (7 downto 0) := (others => '0');
 	signal adder_b_2_scaled : signed (7 downto 0) := (others => '0');
+	signal hblank_in_1 : std_logic := '0';
+	signal vblank_in_1 : std_logic := '0';
+	signal hblank_in_2 : std_logic := '0';
+	signal vblank_in_2 : std_logic := '0';
+	signal hblank_in_3 : std_logic := '0';
+	signal vblank_in_3 : std_logic := '0';
+	signal hblank_in_4 : std_logic := '0';
+	signal vblank_in_4 : std_logic := '0';
 begin
 
 	process (clk) begin
