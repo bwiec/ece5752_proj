@@ -132,14 +132,14 @@ begin
 	process (clk) begin
 		if (rising_edge(clk)) then
 			if (rst = '1') then
-				hblank_in_1 <= 0;
-				vblank_in_1 <= 0;
-				hblank_in_2 <= 0;
-				vblank_in_2 <= 0;
-				hblank_in_3 <= 0;
-				vblank_in_3 <= 0;
-				hblank_in_4 <= 0;
-				vblank_in_4 <= 0;
+				hblank_in_1 <= '0';
+				vblank_in_1 <= '0';
+				hblank_in_2 <= '0';
+				vblank_in_2 <= '0';
+				hblank_in_3 <= '0';
+				vblank_in_3 <= '0';
+				hblank_in_4 <= '0';
+				vblank_in_4 <= '0';
 			else
 				hblank_in_1 <= hblank_in;
 				vblank_in_1 <= vblank_in;
