@@ -61,6 +61,24 @@ begin
 				r_in <= (others => '0');
 				g_in <= (others => '0');
 				b_in <= (others => '0');
+				m00 <= (others => '0');
+				m01 <= (others => '0');
+				m02 <= (others => '0');
+				m02_1 <= (others => '0');
+				m10 <= (others => '0');
+				m11 <= (others => '0');
+				m12 <= (others => '0');
+				m12_1 <= (others => '0');
+				m20 <= (others => '0');
+				m21 <= (others => '0');
+				m22 <= (others => '0');
+				m22_2 <= (others => '0');
+				adder_r_1 <= (others => '0');
+				adder_r_2 <= (others => '0');
+				adder_g_1 <= (others => '0');
+				adder_g_2 <= (others => '0');
+				adder_b_1 <= (others => '0');
+				adder_b_2 <= (others => '0');
 			else
 				-- Input registers
 				r_in <= din(7 downto 0);
@@ -101,5 +119,33 @@ begin
 
 	-- Assign output wire
 	dout <= std_logic_vector(addr_b_2) & std_logic_vector(addr_g_2) & std_logic_vector(addr_b_2);
+
+	-- Match blanking signal delays with datapath delays
+	process (clk) begin
+		if (rising_edge(clk)) then
+			if (rst = '1') then
+				hblank_in_1 <= 0;
+				vblank_in_1 <= 0;
+				hblank_in_2 <= 0;
+				vblank_in_2 <= 0;
+				hblank_in_3 <= 0;
+				vblank_in_3 <= 0;
+				hblank_in_4 <= 0;
+				vblank_in_4 <= 0;
+			else
+				hblank_in_1 <= hblank_in;
+				vblank_in_1 <= vblank_in;
+				hblank_in_2 <= hblank_in_1;
+				vblank_in_2 <= vblank_in_1;
+				hblank_in_3 <= hblank_in_2;
+				vblank_in_3 <= vblank_in_2;
+				hblank_in_4 <= hblank_in_3;
+				vblank_in_4 <= vblank_in_3;
+			end if;
+		end if;
+	end process;
+	
+	hblank_out <= hblank_in_4;
+	vblank_out <= vblank_in_4;
 
 end behavioral
