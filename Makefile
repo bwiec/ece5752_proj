@@ -31,7 +31,7 @@ $(PROJ): tcl/build_hardware.tcl $(HW_DEPS) $(TEST_VECTORS)
 	cd build
 	vivado -mode batch -notrace -source "../$<"
 
-sim: $(SIM_RESULTS) 
+sim: $(SIM_RESULTS)
 $(subst build/proj/proj.sim,%,$(SIM_RESULTS)): tcl/run_sim.tcl $(TEST_VECTORS) $(PROJ)
 	cd build
 	vivado -mode tcl -notrace -source "../$<" -tclargs $(SIM_TIME_MS) $(START_GUI)
