@@ -11,8 +11,8 @@ HW_DEPS := tcl/bd.tcl \
 TEST_VECTORS := test/ar0231_macbeth_demosaic_only_small.dat \
 			  				test/ar0231_rgb_cereal_small.dat
 
-SIM_RESULTS := build/proj/proj.sim/ar0231_macbeth_demosaic_only_small.result \
-			   			 build/proj/proj.sim/ar0231_rgb_cereal_small.result
+SIM_RESULTS := build/proj/proj.sim/sim_1/behav/xsim/ar0231_macbeth_demosaic_only_small.result \
+			   			 build/proj/proj.sim/sim_1/behav/xsim/ar0231_rgb_cereal_small.result
 
 .SILENT:
 .PHONY: all testvector proj sim display_results synth timing_report open_proj_gui publish clean
@@ -37,7 +37,7 @@ $(subst build/proj/proj.sim,%,$(SIM_RESULTS)): tcl/run_sim.tcl $(TEST_VECTORS) $
 	vivado -mode tcl -notrace -source "../$<" -tclargs $(SIM_TIME_MS) $(START_GUI)
 
 display_results: $(SIM_RESULTS)
-	python3 display_testvector.py $^
+	python3 test/display_results.py $^
 
 synth: tcl/run_synth.tcl $(PROJ)
 timing_report: tcl/generate_timing.tcl $(PROJ)

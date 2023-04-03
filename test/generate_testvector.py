@@ -34,7 +34,6 @@ for ii in range(0, vsize_total):
     else:
       hblank = 1
     
-    #print(str(ii) + " " + str(jj) + " " + str(vblank) + " " + str(hblank))
     if ((not hblank) and (not vblank)):
       the_pixel_r = input_img[ii,jj,2]
       the_pixel_g = input_img[ii,jj,1]
