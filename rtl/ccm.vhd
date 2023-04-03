@@ -126,7 +126,7 @@ begin
 	adder_b_2_scaled <= adder_b_2(15 downto 8);
 
 	-- Assign output wire
-	dout <= std_logic_vector(adder_b_2) & std_logic_vector(adder_g_2) & std_logic_vector(adder_b_2);
+	dout <= std_logic_vector(adder_b_2) & std_logic_vector(adder_g_2) & std_logic_vector(adder_r_2);
 
 	-- Match blanking signal delays with datapath delays
 	process (clk) begin
