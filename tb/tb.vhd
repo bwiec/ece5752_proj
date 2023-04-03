@@ -12,8 +12,12 @@ architecture behavioral of tb is
 constant fname_stim1 : string := "ar0231_macbeth_demosaic_only_small.dat";
 constant fname_stim2 : string := "ar0231_rgb_cereal_small.dat";
 
+constant fname_result1 : string := "ar0231_macbeth_demosaic_only_small.result";
+constant fname_result2 : string := "ar0231_rgb_cereal_small.result";
+
 constant CLK_PER : time := 10 ns;
 
+signal start : std_logic := '0';
 signal clk : std_logic := '0';
 signal rst : std_logic := '1';
 signal c00 : std_logic_vector (15 downto 0) := (others => '0');
@@ -36,7 +40,10 @@ signal din_r : std_logic_vector(7 downto 0) := (others => '0');
 signal din_g : std_logic_vector(7 downto 0) := (others => '0');
 signal din_b : std_logic_vector(7 downto 0) := (others => '0');
 
---    fname : in string,
+signal dout_r : std_logic_vector(7 downto 0) := (others => '0');
+signal dout_g : std_logic_vector(7 downto 0) := (others => '0');
+signal dout_b : std_logic_vector(7 downto 0) := (others => '0');
+
 procedure read_image_from_file(
     fname : in string;
     signal vblank : out std_logic;
@@ -73,6 +80,26 @@ begin
     end loop;
 end procedure read_image_from_file;
 
+procedure write_image_to_file(
+    fname : in string;
+    signal r : in std_logic_vector(7 downto 0);
+    signal g : in std_logic_vector(7 downto 0);
+    signal b : in std_logic_vector(7 downto 0)
+) is
+file fid : text open write_mode is fname;
+variable text_line : line;
+begin
+    while (not vblank_out) loop
+			wait until rising_edge(clk);
+			if (not hblank_out) and (not vblank_out) then
+				write(text_line, to_integer(unsigned(b)), left, 4);
+				write(text_line, to_integer(unsigned(g)), left, 4);
+				write(text_line, to_integer(unsigned(r)), left, 4);
+				writeline(fid, text_line);
+			end if;
+		end loop;
+end procedure write_image_to_file;
+
 begin
 
 	c00 <= std_logic_vector(to_signed(569,  c00'length));
@@ -85,6 +112,9 @@ begin
 	c21 <= std_logic_vector(to_signed(-270, c21'length));
 	c22 <= std_logic_vector(to_signed(345,  c22'length));
 	din <= din_b & din_g & din_r;
+	dout_r <= dout(7 downto 0);
+	dout_g <= dout(15 downto 8);
+	dout_b <= dout(23 downto 16);
 
 	-- Instantiate UUT
 	uut : entity work.ccm
@@ -116,11 +146,12 @@ begin
 	clk <= not clk after CLK_PER/2;
 	
 	-- Read test vector from file
-	main : process begin
+	file_reader : process begin
 		wait for 100 ns; -- GSR
 		wait for CLK_PER*10; -- Reset period
 		rst <= '0';
 		
+		start <= '1';
 		read_image_from_file
 		(
 		  fname => fname_stim1,
@@ -139,6 +170,27 @@ begin
 		  r => din_r,
 		  g => din_g,
 		  b => din_b
+		);
+	end process;
+
+	-- Write output to a file
+	file_writer : process begin
+		wait until start;
+		write_image_to_file
+		(
+		  fname => fname_result1,
+		  r => dout_r,
+		  g => dout_g,
+		  b => dout_b
+		);
+
+		wait until falling_edge(vblank_out);
+		write_image_to_file
+		(
+		  fname => fname_result2,
+		  r => dout_r,
+		  g => dout_g,
+		  b => dout_b
 		);
 
 		finish;
