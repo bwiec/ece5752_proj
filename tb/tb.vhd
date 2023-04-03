@@ -8,8 +8,8 @@ end tb;
 
 architecture behavioral of tb is
 
-file fid_stim1 : text open read_mode is "ar0231_macbeth_demosaic_only_small.dat";
-file fid_stim2 : text open read_mode is "ar0231_rgb_cereal_small.dat";
+constant fname_stim1 : string := "ar0231_macbeth_demosaic_only_small.dat";
+constant fname_stim2 : string := "ar0231_rgb_cereal_small.dat";
 
 constant CLK_PER : time := 10 ns;
 
@@ -34,6 +34,43 @@ signal dout : std_logic_vector(23 downto 0);
 signal din_r : std_logic_vector(7 downto 0) := (others => '0');
 signal din_g : std_logic_vector(7 downto 0) := (others => '0');
 signal din_b : std_logic_vector(7 downto 0) := (others => '0');
+
+--    fname : in string,
+procedure read_image_from_file(
+    fname : in string;
+    signal vblank : out std_logic;
+    signal hblank : out std_logic;
+    signal r : out std_logic_vector(7 downto 0);
+    signal g : out std_logic_vector(7 downto 0);
+    signal b : out std_logic_vector(7 downto 0)
+) is
+file fid : text open read_mode is fname;
+variable text_line : line;
+variable ok : boolean;
+variable text_vblank : vblank_in'subtype;
+variable text_hblank : hblank_in'subtype;
+variable text_r : din_r'subtype;
+variable text_g : din_g'subtype;
+variable text_b : din_b'subtype;
+begin
+    while not endfile(fid) loop
+        readline(fid, text_line);
+        
+        read(text_line, text_vblank, ok);
+        read(text_line, text_hblank, ok);
+        read(text_line, text_b, ok);
+        read(text_line, text_g, ok);
+        read(text_line, text_r, ok);
+        
+        vblank <= text_vblank;
+        hblank <= text_hblank;
+        r <= text_r;
+        g <= text_g;
+        b <= text_b;
+        
+        wait for CLK_PER;
+    end loop;
+end procedure read_image_from_file;
 
 begin
 
@@ -91,26 +128,25 @@ begin
 		wait for CLK_PER*10; -- Reset period
 		rst <= '0';
 		
-		while not endfile(fid_stim1) loop
-			readline(fid_stim1, text_line);
-			
-			read(text_line, text_vblank, ok);
-			read(text_line, text_hblank, ok);
-			read(text_line, text_b, ok);
-			read(text_line, text_g, ok);
-			read(text_line, text_r, ok);
-			
-			vblank_in <= text_vblank;
-			hblank_in <= text_hblank;
-			din_r <= text_r;
-			din_g <= text_g;
-			din_b <= text_b;
-		end loop;
+		read_image_from_file
+		(
+		  fname => fname_stim1,
+		  vblank => vblank_in,
+		  hblank => hblank_in,
+		  r => din_r,
+		  g => din_g,
+		  b => din_b
+		);
 		
-		
-		
+		read_image_from_file
+		(
+		  fname => fname_stim2,
+		  vblank => vblank_in,
+		  hblank => hblank_in,
+		  r => din_r,
+		  g => din_g,
+		  b => din_b
+		);
 	end process;
-	
-	
 	
 end behavioral;
