@@ -7,7 +7,7 @@ end tb;
 
 architecture behavioral of tb is
 
-constant CLK_PER : integer := 10;
+constant CLK_PER : time := 10 ns;
 
 signal clk : std_logic := '0';
 signal rst : std_logic := '1';
@@ -25,22 +25,22 @@ signal vblank_in : std_logic := '0';
 signal din : std_logic_vector(23 downto 0) := (others => '0');
 signal hblank_out : std_logic := '0';
 signal vblank_out : std_logic := '0';
-signal dout : std_logic(23 downto 0);
+signal dout : std_logic_vector(23 downto 0);
 
 begin
 
-	c00 <= std_logic_vector(signed(569));
-	c01 <= std_logic_vector(signed(-24));
-	c02 <= std_logic_vector(signed(41));
-	c10 <= std_logic_vector(signed(-204));
-	c11 <= std_logic_vector(signed(503));
-	c12 <= std_logic_vector(signed(61));
-	c20 <= std_logic_vector(signed(102));
-	c21 <= std_logic_vector(signed(-270));
-	c22 <= std_logic_vector(signed(345));
+	c00 <= std_logic_vector(to_signed(569,  c00'length));
+	c01 <= std_logic_vector(to_signed(-24,  c01'length));
+	c02 <= std_logic_vector(to_signed(41,   c02'length));
+	c10 <= std_logic_vector(to_signed(-204, c10'length));
+	c11 <= std_logic_vector(to_signed(503,  c11'length));
+	c12 <= std_logic_vector(to_signed(61,   c12'length));
+	c20 <= std_logic_vector(to_signed(102,  c20'length));
+	c21 <= std_logic_vector(to_signed(-270, c21'length));
+	c22 <= std_logic_vector(to_signed(345,  c22'length));
 
 	-- Instantiate UUT
-	ccm : uut
+	uut : entity work.ccm
 	port map
 	(
 		clk => clk,
@@ -66,21 +66,17 @@ begin
 	);
 	
 	-- Generate clock
-	process begin
-		wait for (CLK_PER/2) ns;
-		clk <= not clk;
-	end process;
+	clk <= not clk after CLK_PER/2;
 	
 	-- Read test vector from file
-	process begin
-		wait for 100 ns;
-		wait for CLK_PER*10;
-		wait until rising_edge(clk);
+	main : process begin
+		wait for 100 ns; -- GSR
+		wait for CLK_PER*10; -- Reset period
 		rst <= '0';
 		
-		while true loop
-			read();
-		end loop;
+		--while true loop
+		--	read();
+		--end loop;
 	end process;
 	
 	
