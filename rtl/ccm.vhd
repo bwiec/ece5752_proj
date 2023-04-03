@@ -24,7 +24,7 @@ entity ccm is
 		
 		hblank_out : out std_logic;
 		vblank_out : out std_logic;
-		dout : out std_logic(23 downto 0);
+		dout : out std_logic_vector(23 downto 0)
 	);
 end ccm;
 
@@ -80,7 +80,7 @@ begin
 				m20 <= (others => '0');
 				m21 <= (others => '0');
 				m22 <= (others => '0');
-				m22_2 <= (others => '0');
+				m22_1 <= (others => '0');
 				adder_r_1 <= (others => '0');
 				adder_r_2 <= (others => '0');
 				adder_g_1 <= (others => '0');
@@ -94,15 +94,15 @@ begin
 				b_in <= din(23 downto 16);
 				
 				-- Coefficient multiplication
-				m00 <= c00 * to_signed(r_in);
-				m01 <= c01 * to_signed(g_in);
-				m02 <= c02 * to_signed(b_in);
-				m10 <= c10 * to_signed(r_in);
-				m11 <= c11 * to_signed(g_in);
-				m12 <= c12 * to_signed(b_in);
-				m20 <= c20 * to_signed(r_in);
-				m21 <= c21 * to_signed(g_in);
-				m22 <= c22 * to_signed(b_in);
+				m00 <= signed(c00) * signed(r_in);
+				m01 <= signed(c01) * signed(g_in);
+				m02 <= signed(c02) * signed(b_in);
+				m10 <= signed(c10) * signed(r_in);
+				m11 <= signed(c11) * signed(g_in);
+				m12 <= signed(c12) * signed(b_in);
+				m20 <= signed(c20) * signed(r_in);
+				m21 <= signed(c21) * signed(g_in);
+				m22 <= signed(c22) * signed(b_in);
 				
 				-- Delay to match adder pipelines
 				m02_1 <= m02;
@@ -126,7 +126,7 @@ begin
 	adder_b_2_scaled <= adder_b_2(15 downto 8);
 
 	-- Assign output wire
-	dout <= std_logic_vector(addr_b_2) & std_logic_vector(addr_g_2) & std_logic_vector(addr_b_2);
+	dout <= std_logic_vector(adder_b_2) & std_logic_vector(adder_g_2) & std_logic_vector(adder_b_2);
 
 	-- Match blanking signal delays with datapath delays
 	process (clk) begin
@@ -156,4 +156,4 @@ begin
 	hblank_out <= hblank_in_4;
 	vblank_out <= vblank_in_4;
 
-end behavioral
+end behavioral;
