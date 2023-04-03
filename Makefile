@@ -1,11 +1,13 @@
 SIM_TIME_US := 10
 START_GUI ?= 1
 
+TIME := $(shell date "+%Y_%m_%d")
 PROJ := build/proj/proj.xpr
-BIT = build/proj/proj.runs/impl_1/design_1_wrapper.pdi
+
 HW_DEPS := tcl/bd.tcl \
 		  		 rtl/ \
 		  		 xdc/
+
 TEST_VECTORS := test/ar0231_macbeth_demosaic_only_small.dat \
 			  				test/ar0231_rgb_cereal_small.dat
 
@@ -13,20 +15,21 @@ SIM_RESULTS := build/proj/proj.sim/ar0231_macbeth_demosaic_only_small.result \
 			   			 build/proj/proj.sim/ar0231_rgb_cereal_small.result
 
 .SILENT:
-.PHONY: all testvector proj sim display_results bitstream clean
+.PHONY: all testvector proj sim display_results synth timing_report open_proj_gui publish clean
 .ONESHELL:
 
-all: display_results bitstream
+all: display_results timing_report
 
 testvector: $(TEST_VECTORS)
 test/%.dat: test/%.png
 	python3 test/generate_testvector.py $^
 
 proj: $(PROJ)
-$(PROJ): $(HW_DEPS)
+$(PROJ): tcl/build_hardware.tcl $(HW_DEPS) $(TEST_VECTORS)
 	rm -rf build; # If one of those files/directories changes, we need to re-build the vivado project since build_hardware.tcl isn't re-entrant
 	mkdir -p build
-	vivado -mode batch -notrace -source tcl/build_hardware.tcl
+	cd build
+	vivado -mode batch -notrace -source "../$<"
 
 sim: $(SIM_RESULTS) 
 $(subst build/proj/proj.sim,%,$(SIM_RESULTS)): tcl/run_sim.tcl $(TEST_VECTORS) $(PROJ)

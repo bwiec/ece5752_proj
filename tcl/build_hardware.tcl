@@ -16,18 +16,23 @@ set_property BOARD_PART xilinx.com:zcu102:part0:3.4 [current_project]
 #-----------------------------------------------------------
 # Add HDL source to design
 #-----------------------------------------------------------
-import_files -norecurse -fileset sources_1 "../rtl/"
+add_files -norecurse -fileset sources_1 "../rtl/"
 set_property top ccm [get_filesets sources_1]
 
 #-----------------------------------------------------------
 # Add xdc constraints to design
 #-----------------------------------------------------------
-import_files -norecurse -fileset constrs_1 "../xdc/"
+add_files -norecurse -fileset constrs_1 "../xdc/"
 
 #-----------------------------------------------------------
 # Add testbench source to design
 #-----------------------------------------------------------
 add_files -norecurse -fileset sim_1 "../tb/"
 set_property top tb [get_filesets sim_1]
+
+#-----------------------------------------------------------
+# Add test vectors to design
+#-----------------------------------------------------------
+add_files -norecurse -fileset sim_1 [glob "../test/*.dat"]
 
 exit
