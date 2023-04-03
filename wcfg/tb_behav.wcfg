@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0.000000 us"></ZoomStartTime>
+      <ZoomEndTime time="1,029.768468 us"></ZoomEndTime>
+      <Cursor1Time time="358.324146 us"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="459"></NameColumnWidth>
+      <ValueColumnWidth column_width="229"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="20" />
+   <wvobject type="logic" fp_name="/tb/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb/rst">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/c00">
+      <obj_property name="ElementShortName">c00[15:0]</obj_property>
+      <obj_property name="ObjectShortName">c00[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/c01">
+      <obj_property name="ElementShortName">c01[15:0]</obj_property>
+      <obj_property name="ObjectShortName">c01[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/c02">
+      <obj_property name="ElementShortName">c02[15:0]</obj_property>
+      <obj_property name="ObjectShortName">c02[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/c10">
+      <obj_property name="ElementShortName">c10[15:0]</obj_property>
+      <obj_property name="ObjectShortName">c10[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/c11">
+      <obj_property name="ElementShortName">c11[15:0]</obj_property>
+      <obj_property name="ObjectShortName">c11[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/c12">
+      <obj_property name="ElementShortName">c12[15:0]</obj_property>
+      <obj_property name="ObjectShortName">c12[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/c20">
+      <obj_property name="ElementShortName">c20[15:0]</obj_property>
+      <obj_property name="ObjectShortName">c20[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/c21">
+      <obj_property name="ElementShortName">c21[15:0]</obj_property>
+      <obj_property name="ObjectShortName">c21[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/c22">
+      <obj_property name="ElementShortName">c22[15:0]</obj_property>
+      <obj_property name="ObjectShortName">c22[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb/hblank_in">
+      <obj_property name="ElementShortName">hblank_in</obj_property>
+      <obj_property name="ObjectShortName">hblank_in</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb/vblank_in">
+      <obj_property name="ElementShortName">vblank_in</obj_property>
+      <obj_property name="ObjectShortName">vblank_in</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/din">
+      <obj_property name="ElementShortName">din[23:0]</obj_property>
+      <obj_property name="ObjectShortName">din[23:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb/hblank_out">
+      <obj_property name="ElementShortName">hblank_out</obj_property>
+      <obj_property name="ObjectShortName">hblank_out</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb/vblank_out">
+      <obj_property name="ElementShortName">vblank_out</obj_property>
+      <obj_property name="ObjectShortName">vblank_out</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dout">
+      <obj_property name="ElementShortName">dout[23:0]</obj_property>
+      <obj_property name="ObjectShortName">dout[23:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/din_r">
+      <obj_property name="ElementShortName">din_r[7:0]</obj_property>
+      <obj_property name="ObjectShortName">din_r[7:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/din_g">
+      <obj_property name="ElementShortName">din_g[7:0]</obj_property>
+      <obj_property name="ObjectShortName">din_g[7:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/din_b">
+      <obj_property name="ElementShortName">din_b[7:0]</obj_property>
+      <obj_property name="ObjectShortName">din_b[7:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+</wave_config>

@@ -1,4 +1,4 @@
-SIM_TIME_US := 10
+SIM_TIME_MS := 10
 START_GUI ?= 1
 
 TIME := $(shell date "+%Y_%m_%d")
@@ -34,7 +34,7 @@ $(PROJ): tcl/build_hardware.tcl $(HW_DEPS) $(TEST_VECTORS)
 sim: $(SIM_RESULTS) 
 $(subst build/proj/proj.sim,%,$(SIM_RESULTS)): tcl/run_sim.tcl $(TEST_VECTORS) $(PROJ)
 	cd build
-	vivado -mode tcl -notrace -source "../$<" -tclargs $(SIM_TIME_US) $(START_GUI)
+	vivado -mode tcl -notrace -source "../$<" -tclargs $(SIM_TIME_MS) $(START_GUI)
 
 display_results: $(SIM_RESULTS)
 	python3 display_testvector.py $^

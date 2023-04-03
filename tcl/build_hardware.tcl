@@ -28,6 +28,7 @@ add_files -norecurse -fileset constrs_1 "../xdc/"
 # Add testbench source to design
 #-----------------------------------------------------------
 add_files -norecurse -fileset sim_1 "../tb/"
+set_property file_type {VHDL 2008} [get_files tb.vhd]
 set_property top tb [get_filesets sim_1]
 
 #-----------------------------------------------------------
