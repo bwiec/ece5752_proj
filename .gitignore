@@ -4,3 +4,4 @@ build/
 vivado.*
 *.log
 *.jou
+test/*.dat

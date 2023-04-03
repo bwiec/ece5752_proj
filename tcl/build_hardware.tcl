@@ -10,35 +10,24 @@ if { [file exists ${proj_name}] == 1 } {
 #-----------------------------------------------------------
 # Create project
 #-----------------------------------------------------------
-create_project ${proj_name} "build/${proj_name}" -part xczu9eg-ffvb1156-2-e
+create_project ${proj_name} "${proj_name}" -part xczu9eg-ffvb1156-2-e
 set_property BOARD_PART xilinx.com:zcu102:part0:3.4 [current_project]
 
 #-----------------------------------------------------------
 # Add HDL source to design
 #-----------------------------------------------------------
-#import_files -norecurse -fileset sources_1 "rtl"
+import_files -norecurse -fileset sources_1 "../rtl/"
+set_property top ccm [get_filesets sources_1]
 
 #-----------------------------------------------------------
 # Add xdc constraints to design
 #-----------------------------------------------------------
-import_files -norecurse -fileset constrs_1 "xdc"
+import_files -norecurse -fileset constrs_1 "../xdc/"
 
 #-----------------------------------------------------------
-# Create BD source
+# Add testbench source to design
 #-----------------------------------------------------------
-source "xsa_scripts/bd.tcl"
-validate_bd_design
-save_bd_design
-
-#-----------------------------------------------------------
-# Generate BD output products
-#-----------------------------------------------------------
-generate_target all [get_files "build/${proj_name}/${proj_name}.srcs/sources_1/bd/design_1/design_1.bd"]
-make_wrapper -files [get_files "build/${proj_name}/${proj_name}.srcs/sources_1/bd/design_1/design_1.bd"] -top
-import_files -force -norecurse "build/${proj_name}/${proj_name}.srcs/sources_1/bd/design_1/hdl/design_1_wrapper.v"
-set_property top "design_1_wrapper" [current_fileset]
+add_files -norecurse -fileset sim_1 "../tb/"
+set_property top tb [get_filesets sim_1]
 
 exit
-
-
-
