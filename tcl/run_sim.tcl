@@ -7,9 +7,11 @@ launch_simulation
 open_wave_config ../wcfg/tb_behav.wcfg
 restart
 
-puts "Running simulation for ${SIM_TIME_MS}"
+puts "Running simulation for ${SIM_TIME_MS} ms..."
 run ${SIM_TIME_MS} ms
 
 if { ${START_GUI} == 1 } {
   start_gui
+} else {
+  exit
 }

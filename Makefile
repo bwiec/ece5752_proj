@@ -1,47 +1,68 @@
 SIM_TIME_MS := 10
 START_GUI ?= 1
 
-TIME := $(shell date "+%Y_%m_%d")
-PROJ := build/proj/proj.xpr
+SYNTH_SRCS := rtl/ \
+		  				xdc/
 
-HW_DEPS := tb/ \
-		  		 rtl/ \
-		  		 xdc/
+SIM_SRCS := tb/ \
+						rtl/
 
 TEST_VECTORS := test/ar0231_macbeth_demosaic_only_small.dat \
 			  				test/ar0231_rgb_cereal_small.dat
 
-SIM_RESULTS := build/proj/proj.sim/sim_1/behav/xsim/ar0231_macbeth_demosaic_only_small.result \
-			   			 build/proj/proj.sim/sim_1/behav/xsim/ar0231_rgb_cereal_small.result
+BUILD_DIR := build/proj
+PROJ := $(BUILD_DIR)/proj.xpr
+SIM_RESULTS := $(BUILD_DIR)/proj.sim/sim_1/behav/xsim/ar0231_macbeth_demosaic_only_small.result \
+			   			 $(BUILD_DIR)/proj.sim/sim_1/behav/xsim/ar0231_rgb_cereal_small.result
+
+SYNTH_DCP := $(BUILD_DIR)/proj.runs/synth_1/ccm.dcp
+TIMING_REPORT := $(BUILD_DIR)/proj.runs/synth_1/ccm_timing_report.txt
+UTILIZATION_REPORT := $(BUILD_DIR)/proj.runs/synth_1/*_utilization_synth.rpt
+
+TIME := $(shell date "+%Y_%m_%d")
 
 .SILENT:
-.PHONY: all testvector proj sim display_results synth timing_report open_proj_gui publish clean
+.PHONY: all testvector proj sim display_results synth timing_report print_timing print_utilization open_proj_gui publish clean
 .ONESHELL:
 
-all: display_results timing_report
+all: display_results print_timing print_utilization
 
 testvector: $(TEST_VECTORS)
 test/%.dat: test/%.png
 	python3 test/generate_testvector.py $^
 
-proj: $(PROJ)
-$(PROJ): tcl/build_hardware.tcl $(HW_DEPS) $(TEST_VECTORS)
+#proj: $(PROJ)
+#$(PROJ): tcl/build_hardware.tcl $(SIM_SRCS) $(SYNTH_SRCS) $(TEST_VECTORS)
+proj: $(BUILD_DIR)
+$(BUILD_DIR): tcl/build_hardware.tcl $(SIM_SRCS) $(SYNTH_SRCS) $(TEST_VECTORS)
 	rm -rf build; # If one of those files/directories changes, we need to re-build the vivado project since build_hardware.tcl isn't re-entrant
 	mkdir -p build
 	cd build
 	vivado -mode batch -notrace -source "../$<"
 
 sim: $(SIM_RESULTS)
-$(subst build/proj/proj.sim,%,$(SIM_RESULTS)): tcl/run_sim.tcl $(TEST_VECTORS) $(PROJ)
+$(subst $(BUILD_DIR)/proj.sim,%,$(SIM_RESULTS)): tcl/run_sim.tcl $(TEST_VECTORS) $(SIM_SRCS) $(BUILD_DIR)
 	cd build
 	vivado -mode tcl -notrace -source "../$<" -tclargs $(SIM_TIME_MS) $(START_GUI)
 
 display_results: $(SIM_RESULTS)
 	python3 test/display_results.py $^
 
-synth: tcl/run_synth.tcl $(PROJ)
-timing_report: tcl/generate_timing.tcl $(PROJ)
+synth: $(SYNTH_DCP)
+$(SYNTH_DCP): tcl/run_synth.tcl $(SYNTH_SRCS) $(BUILD_DIR)
+	cd build
 	vivado -mode tcl -notrace -source "../$<"
+
+timing_report: $(TIMING_REPORT)
+$(TIMING_REPORT): tcl/generate_timing.tcl $(SYNTH_DCP)
+	cd build
+	vivado -mode tcl -notrace -source "../$<"
+
+print_timing: timing_report
+	grep -A 6 -B 1 "Design Timing Summary" $(TIMING_REPORT)
+
+print_utilization: synth
+	grep -A 90 -B 1 "Tool Version" $(UTILIZATION_REPORT)
 
 open_proj_gui: $(PROJ)
 	vivado $<

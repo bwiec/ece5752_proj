@@ -131,16 +131,16 @@ begin
 	adder_b_2_scaled <= adder_b_2(adder_b_2'left downto adder_b_2'left-15);
 
 	-- Saturate to 8 bits
-	adder_r_2_sat <= SAT_MAX when adder_r_2_scaled > SAT_MAX else
-									 SAT_MIN when adder_r_2_scaled < SAT_MIN else
+	adder_r_2_sat <= SAT_MAX(7 downto 0) when adder_r_2_scaled > SAT_MAX else
+									 SAT_MIN(7 downto 0) when adder_r_2_scaled < SAT_MIN else
 									 adder_r_2_scaled(7 downto 0);
 
-	adder_g_2_sat <= SAT_MAX when adder_g_2_scaled > SAT_MAX else
-									 SAT_MIN when adder_g_2_scaled < SAT_MIN else
+	adder_g_2_sat <= SAT_MAX(7 downto 0) when adder_g_2_scaled > SAT_MAX else
+									 SAT_MIN(7 downto 0) when adder_g_2_scaled < SAT_MIN else
 									 adder_g_2_scaled(7 downto 0);
 
-	adder_b_2_sat <= SAT_MAX when adder_b_2_scaled > SAT_MAX else
-									 SAT_MIN when adder_b_2_scaled < SAT_MIN else
+	adder_b_2_sat <= SAT_MAX(7 downto 0) when adder_b_2_scaled > SAT_MAX else
+									 SAT_MIN(7 downto 0) when adder_b_2_scaled < SAT_MIN else
 									 adder_b_2_scaled(7 downto 0);
 
 	-- Assign output wire
