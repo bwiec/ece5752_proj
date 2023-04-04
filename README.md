@@ -3,3 +3,7 @@
 * Tool: Vivado 2022.2
 * Language: VHDL
 * Objective: Maximum pixel throughput
+
+![result1](images/result1.png) 
+
+![result2](images/result2.png)
