@@ -29,30 +29,35 @@ entity ccm is
 end ccm;
 
 architecture behavioral of ccm is
-	signal r_in : std_logic_vector (15 downto 0) := (others => '0');
-	signal g_in : std_logic_vector (15 downto 0) := (others => '0');
-	signal b_in : std_logic_vector (15 downto 0) := (others => '0');
-	signal m00 : signed (31 downto 0) := (others => '0');
-	signal m01 : signed (31 downto 0) := (others => '0');
-	signal m02 : signed (31 downto 0) := (others => '0');
-	signal m02_1 : signed (31 downto 0) := (others => '0');
-	signal m10 : signed (31 downto 0) := (others => '0');
-	signal m11 : signed (31 downto 0) := (others => '0');
-	signal m12 : signed (31 downto 0) := (others => '0');
-	signal m12_1 : signed (31 downto 0) := (others => '0');
-	signal m20 : signed (31 downto 0) := (others => '0');
-	signal m21 : signed (31 downto 0) := (others => '0');
-	signal m22 : signed (31 downto 0) := (others => '0');
-	signal m22_1 : signed (31 downto 0) := (others => '0');
-	signal adder_r_1 : signed (31 downto 0) := (others => '0');
-	signal adder_r_2 : signed (31 downto 0) := (others => '0');
-	signal adder_g_1 : signed (31 downto 0) := (others => '0');
-	signal adder_g_2 : signed (31 downto 0) := (others => '0');
-	signal adder_b_1 : signed (31 downto 0) := (others => '0');
-	signal adder_b_2 : signed (31 downto 0) := (others => '0');
-	signal adder_r_2_scaled : signed (7 downto 0) := (others => '0');
-	signal adder_g_2_scaled : signed (7 downto 0) := (others => '0');
-	signal adder_b_2_scaled : signed (7 downto 0) := (others => '0');
+	constant SAT_MIN : signed (15 downto 0) := X"0000";
+	constant SAT_MAX : signed (15 downto 0) := X"00FF";
+	signal r_in : std_logic_vector (16 downto 0) := (others => '0');
+	signal g_in : std_logic_vector (16 downto 0) := (others => '0');
+	signal b_in : std_logic_vector (16 downto 0) := (others => '0');
+	signal m00 : signed (32 downto 0) := (others => '0');
+	signal m01 : signed (32 downto 0) := (others => '0');
+	signal m02 : signed (32 downto 0) := (others => '0');
+	signal m02_1 : signed (32 downto 0) := (others => '0');
+	signal m10 : signed (32 downto 0) := (others => '0');
+	signal m11 : signed (32 downto 0) := (others => '0');
+	signal m12 : signed (32 downto 0) := (others => '0');
+	signal m12_1 : signed (32 downto 0) := (others => '0');
+	signal m20 : signed (32 downto 0) := (others => '0');
+	signal m21 : signed (32 downto 0) := (others => '0');
+	signal m22 : signed (32 downto 0) := (others => '0');
+	signal m22_1 : signed (32 downto 0) := (others => '0');
+	signal adder_r_1 : signed (32 downto 0) := (others => '0');
+	signal adder_r_2 : signed (32 downto 0) := (others => '0');
+	signal adder_g_1 : signed (32 downto 0) := (others => '0');
+	signal adder_g_2 : signed (32 downto 0) := (others => '0');
+	signal adder_b_1 : signed (32 downto 0) := (others => '0');
+	signal adder_b_2 : signed (32 downto 0) := (others => '0');
+	signal adder_r_2_scaled : signed (15 downto 0) := (others => '0');
+	signal adder_g_2_scaled : signed (15 downto 0) := (others => '0');
+	signal adder_b_2_scaled : signed (15 downto 0) := (others => '0');
+	signal adder_r_2_sat : signed (7 downto 0) := (others => '0');
+	signal adder_g_2_sat : signed (7 downto 0) := (others => '0');
+	signal adder_b_2_sat : signed (7 downto 0) := (others => '0');
 	signal hblank_in_1 : std_logic := '0';
 	signal vblank_in_1 : std_logic := '0';
 	signal hblank_in_2 : std_logic := '0';
@@ -89,9 +94,9 @@ begin
 				adder_b_2 <= (others => '0');
 			else
 				-- Input registers
-				r_in <= din(7 downto 0) & X"00";
-				g_in <= din(15 downto 8) & X"00";
-				b_in <= din(23 downto 16) & X"00";
+				r_in <= '0' & din(7 downto 0) & X"00";
+				g_in <= '0' & din(15 downto 8) & X"00";
+				b_in <= '0' & din(23 downto 16) & X"00";
 				
 				-- Coefficient multiplication
 				m00 <= signed(c00) * signed(r_in);
@@ -121,12 +126,25 @@ begin
 	end process;
 	
 	-- Scale back to 8 bits per component
-	adder_r_2_scaled <= adder_r_2(adder_r_2'left downto adder_r_2'left-7);
-	adder_g_2_scaled <= adder_g_2(adder_g_2'left downto adder_g_2'left-7);
-	adder_b_2_scaled <= adder_b_2(adder_b_2'left downto adder_b_2'left-7);
+	adder_r_2_scaled <= adder_r_2(adder_r_2'left downto adder_r_2'left-15);
+	adder_g_2_scaled <= adder_g_2(adder_g_2'left downto adder_g_2'left-15);
+	adder_b_2_scaled <= adder_b_2(adder_b_2'left downto adder_b_2'left-15);
+
+	-- Saturate to 8 bits
+	adder_r_2_sat <= SAT_MAX when adder_r_2_scaled > SAT_MAX else
+									 SAT_MIN when adder_r_2_scaled < SAT_MIN else
+									 adder_r_2_scaled(7 downto 0);
+
+	adder_g_2_sat <= SAT_MAX when adder_g_2_scaled > SAT_MAX else
+									 SAT_MIN when adder_g_2_scaled < SAT_MIN else
+									 adder_g_2_scaled(7 downto 0);
+
+	adder_b_2_sat <= SAT_MAX when adder_b_2_scaled > SAT_MAX else
+									 SAT_MIN when adder_b_2_scaled < SAT_MIN else
+									 adder_b_2_scaled(7 downto 0);
 
 	-- Assign output wire
-	dout <= std_logic_vector(adder_b_2_scaled) & std_logic_vector(adder_g_2_scaled) & std_logic_vector(adder_r_2_scaled);
+	dout <= std_logic_vector(adder_b_2_sat) & std_logic_vector(adder_g_2_sat) & std_logic_vector(adder_r_2_sat);
 
 	-- Match blanking signal delays with datapath delays
 	process (clk) begin

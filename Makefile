@@ -4,7 +4,7 @@ START_GUI ?= 1
 TIME := $(shell date "+%Y_%m_%d")
 PROJ := build/proj/proj.xpr
 
-HW_DEPS := tcl/bd.tcl \
+HW_DEPS := tb/ \
 		  		 rtl/ \
 		  		 xdc/
 
