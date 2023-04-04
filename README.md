@@ -7,3 +7,9 @@
 ![result1](images/result1.png) 
 
 ![result2](images/result2.png)
+
+![schematic](images/schematic.png)
+
+![sim1](images/sim1.png)
+
+![sim2](images/sim2.png)
