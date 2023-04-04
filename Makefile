@@ -11,6 +11,7 @@ TEST_VECTORS := test/ar0231_macbeth_demosaic_only_small.dat \
 			  				test/ar0231_rgb_cereal_small.dat
 
 BUILD_DIR := build/proj
+PROJ_LOCKFILE=$(BUILD_DIR)/.lock
 PROJ := $(BUILD_DIR)/proj.xpr
 SIM_RESULTS := $(BUILD_DIR)/proj.sim/sim_1/behav/xsim/ar0231_macbeth_demosaic_only_small.result \
 			   			 $(BUILD_DIR)/proj.sim/sim_1/behav/xsim/ar0231_rgb_cereal_small.result
@@ -31,17 +32,16 @@ testvector: $(TEST_VECTORS)
 test/%.dat: test/%.png
 	python3 test/generate_testvector.py $^
 
-#proj: $(PROJ)
-#$(PROJ): tcl/build_hardware.tcl $(SIM_SRCS) $(SYNTH_SRCS) $(TEST_VECTORS)
-proj: $(BUILD_DIR)
-$(BUILD_DIR): tcl/build_hardware.tcl $(SIM_SRCS) $(SYNTH_SRCS) $(TEST_VECTORS)
+proj: $(PROJ)
+$(PROJ) $(PROJ_LOCKFILE): tcl/build_hardware.tcl $(SIM_SRCS) $(SYNTH_SRCS) $(TEST_VECTORS)
 	rm -rf build; # If one of those files/directories changes, we need to re-build the vivado project since build_hardware.tcl isn't re-entrant
 	mkdir -p build
 	cd build
 	vivado -mode batch -notrace -source "../$<"
+	touch ../$(PROJ_LOCKFILE)
 
 sim: $(SIM_RESULTS)
-$(subst $(BUILD_DIR)/proj.sim,%,$(SIM_RESULTS)): tcl/run_sim.tcl $(TEST_VECTORS) $(SIM_SRCS) $(BUILD_DIR)
+$(subst $(BUILD_DIR)/proj.sim,%,$(SIM_RESULTS)): tcl/run_sim.tcl $(TEST_VECTORS) $(SIM_SRCS) $(PROJ_LOCKFILE)
 	cd build
 	vivado -mode tcl -notrace -source "../$<" -tclargs $(SIM_TIME_MS) $(START_GUI)
 
@@ -49,7 +49,7 @@ display_results: $(SIM_RESULTS)
 	python3 test/display_results.py $^
 
 synth: $(SYNTH_DCP)
-$(SYNTH_DCP): tcl/run_synth.tcl $(SYNTH_SRCS) $(BUILD_DIR)
+$(SYNTH_DCP): tcl/run_synth.tcl $(SYNTH_SRCS) $(PROJ_LOCKFILE)
 	cd build
 	vivado -mode tcl -notrace -source "../$<"
 
